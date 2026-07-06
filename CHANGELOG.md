@@ -13,3 +13,9 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
 - Project scaffolding: Poetry (PEP 621), Ruff + mypy (strict), pytest with a 95% coverage
   gate, pre-commit, GitHub Actions CI (check-version / lint / test / build / publish), and
   the typed package skeleton (`py.typed`).
+- Client-side cryptography core (`dotmage.core.crypto`): Argon2id key derivation, account-key
+  generation and wrapping (with a recovery-code path), authenticated blob encryption with a
+  versioned envelope and content hashing, and domain-separated sealed keys for team
+  invitations — all pinned in `crypto.suite` for interop review.
+- Dependency-free `.env` parser/serialiser (`dotmage.dotenv`).
+- Full exception hierarchy with server error-code mapping (`dotmage.exceptions`).

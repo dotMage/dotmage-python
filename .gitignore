@@ -22,6 +22,9 @@ env/
 coverage.xml
 htmlcov/
 
+# Poetry local config (in-project venv is a local dev preference)
+poetry.toml
+
 # Local secrets / credentials
 .env
 .env.*
