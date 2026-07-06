@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  POETRY_VERSION: "2.1.2"
+  POETRY_VERSION: "2.3.4"
   POETRY_VIRTUALENVS_CREATE: "true"
   POETRY_VIRTUALENVS_IN_PROJECT: "true"
 
