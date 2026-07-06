@@ -11,6 +11,7 @@ The server stores only opaque ciphertext, so this package performs all cryptogra
 
 from __future__ import annotations
 
+from dotmage.async_client import AsyncDotMage
 from dotmage.client import DotMage
 from dotmage.core.credentials import Credentials, CredentialStore, FileStore, MemoryStore
 from dotmage.exceptions import (
@@ -27,6 +28,7 @@ from dotmage.settings import Settings, get_settings
 __version__ = "0.1.0"
 
 __all__ = [
+    "AsyncDotMage",
     "CredentialStore",
     "Credentials",
     "DecryptionError",

@@ -32,4 +32,6 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
   unlock/recovery/lock, master-password change, apps/environments, encrypted push/pull
   (dict, `.env` text, files), revisions/diff/rollback/drift status, device management, team
   invitations and administration, key rotation (with resume), and the audit log.
-- Test suite with 95%+ enforced coverage (crypto, transport, models, flows, rotation).
+- Asynchronous `AsyncDotMage` client mirroring the full sync API over httpx's async client.
+- Test suite with 95%+ enforced coverage (crypto, transport, models, sync + async flows,
+  rotation).

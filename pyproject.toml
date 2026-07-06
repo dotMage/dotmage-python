@@ -83,6 +83,9 @@ exclude = ["tests/"]
 addopts = "--cov=dotmage --cov-branch --cov-report=term-missing --cov-report=xml --cov-fail-under=95"
 asyncio_mode = "auto"
 testpaths = ["tests"]
+filterwarnings = [
+    "ignore::DeprecationWarning:pytest_asyncio.*",
+]
 
 [tool.coverage.run]
 branch = true
