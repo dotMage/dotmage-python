@@ -19,3 +19,6 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
   invitations — all pinned in `crypto.suite` for interop review.
 - Dependency-free `.env` parser/serialiser (`dotmage.dotenv`).
 - Full exception hierarchy with server error-code mapping (`dotmage.exceptions`).
+- Configuration (`dotmage.settings`, env prefix `DOTMAGE_`), enumerations (`dotmage.enums`),
+  and typed API response models plus SDK value objects — diff, drift status, invite payload
+  (`dotmage.models`).
