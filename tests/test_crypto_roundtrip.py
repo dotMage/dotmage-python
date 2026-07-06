@@ -93,6 +93,20 @@ def test_recovery_code_normalisation() -> None:
     assert recovered == creation.account_key
 
 
+def test_recovery_wrong_code_raises() -> None:
+    creation = keys.create_account_key_material("pw", with_recovery=True, **FAST)
+    m = creation.material
+    with pytest.raises(MasterPasswordError, match="wrong recovery code"):
+        keys.unwrap_account_key_with_recovery(
+            "AAAAA-BBBBB-CCCCC-DDDDD",
+            salt_rc=m.salt_rc,
+            nonce_rc=m.nonce_rc,
+            wrapped_ak_rc=m.wrapped_ak_rc,
+            argon_memory=m.argon_memory,
+            argon_iterations=m.argon_iterations,
+        )
+
+
 def test_recovery_unwrap_without_wrap_configured() -> None:
     with pytest.raises(MasterPasswordError, match="no recovery wrap"):
         keys.unwrap_account_key_with_recovery(

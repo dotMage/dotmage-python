@@ -26,3 +26,10 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
   retry policy (transient exceptions + retryable statuses), Bearer injection, transparent
   one-shot token refresh on 401, and error-response mapping.
 - Credential stores (`dotmage.core.credentials`): in-memory and file-backed (`0600`).
+- Endpoint request specs (`dotmage.core.api`), in-memory session (`dotmage.session`), and
+  pure diff/drift helpers (`dotmage.core.diffing`).
+- Synchronous `DotMage` client: vault init, device enrollment, team join, CI-token unlock,
+  unlock/recovery/lock, master-password change, apps/environments, encrypted push/pull
+  (dict, `.env` text, files), revisions/diff/rollback/drift status, device management, team
+  invitations and administration, key rotation (with resume), and the audit log.
+- Test suite with 95%+ enforced coverage (crypto, transport, models, flows, rotation).

@@ -130,6 +130,40 @@ def test_non_dict_json_is_wrapped() -> None:
 
 
 @respx.mock
+def test_empty_body_decodes_to_empty_dict() -> None:
+    respx.get(f"{BASE}/api/v1/ping").mock(return_value=httpx.Response(200, content=b""))
+    transport = _transport(device_token="t")
+    assert transport.request(MethodEnum.GET, "/api/v1/ping") == {}
+    transport.close()
+
+
+def test_refresh_without_token_raises() -> None:
+    transport = _transport(device_token="t")  # no refresh token
+    with pytest.raises(ConfigError):
+        transport.refresh()
+    transport.close()
+
+
+@respx.mock
+async def test_async_retries_retryable_status() -> None:
+    respx.get(f"{BASE}/api/v1/health").mock(
+        side_effect=[httpx.Response(503), httpx.Response(200, json={"status": "ok"})]
+    )
+    store = MemoryStore(Credentials(server_url=BASE, device_token="t"))
+    async with AsyncTransport(BASE, store, retry_initial=0) as transport:
+        result = await transport.request(MethodEnum.GET, "/api/v1/health")
+    assert result["status"] == "ok"
+
+
+@respx.mock
+async def test_async_refresh_without_token_raises() -> None:
+    store = MemoryStore(Credentials(server_url=BASE, device_token="t"))
+    async with AsyncTransport(BASE, store, retry_initial=0) as transport:
+        with pytest.raises(ConfigError):
+            await transport.refresh()
+
+
+@respx.mock
 async def test_async_transport_roundtrip() -> None:
     respx.get(f"{BASE}/api/v1/apps").mock(return_value=httpx.Response(200, json={"apps": []}))
     store = MemoryStore(Credentials(server_url=BASE, device_token="t"))
