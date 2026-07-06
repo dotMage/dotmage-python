@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main, master]
+    tags: ["v*"]
   pull_request:
 
 env:
@@ -77,7 +78,9 @@ jobs:
 
   build:
     needs: [check-version, lint, test]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: >-
+      github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,8 +97,10 @@ jobs:
           path: dist/
 
   publish:
+    # Publishes only on a version tag (e.g. `git tag v0.1.0 && git push --tags`),
+    # and only once PyPI trusted publishing (OIDC) is configured for this repo.
     needs: [build]
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

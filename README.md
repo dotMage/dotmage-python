@@ -85,6 +85,19 @@ poetry install
 ./scripts/tests.sh     # pytest with a 95% coverage gate
 ```
 
+## Releasing
+
+CI runs `check-version → lint → test → build` on every push to `main` and on pull requests.
+Publishing to PyPI happens only on a version tag, once
+[PyPI trusted publishing](https://docs.pypi.org/trusted-publishers/) is configured for this
+repository (a GitHub environment named `pypi`):
+
+```bash
+# bump the version in pyproject.toml and update CHANGELOG.md, then:
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
