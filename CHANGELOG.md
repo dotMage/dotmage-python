@@ -22,3 +22,7 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
 - Configuration (`dotmage.settings`, env prefix `DOTMAGE_`), enumerations (`dotmage.enums`),
   and typed API response models plus SDK value objects — diff, drift status, invite payload
   (`dotmage.models`).
+- HTTP transport (`dotmage.core.http`): sync and async clients over httpx with a tenacity
+  retry policy (transient exceptions + retryable statuses), Bearer injection, transparent
+  one-shot token refresh on 401, and error-response mapping.
+- Credential stores (`dotmage.core.credentials`): in-memory and file-backed (`0600`).
