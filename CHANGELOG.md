@@ -35,5 +35,7 @@ so every user-visible change must bump the version under `[Unreleased]` in the s
 - Asynchronous `AsyncDotMage` client mirroring the full sync API over httpx's async client.
 - Runnable examples under `examples/` (quickstart, CI pull, drift/diff, team invite/join,
   rotation, async) plus an `.env.example`.
+- Documentation under `docs/`: getting started, security model, the cryptographic contract
+  (with interoperability status), a full API reference, and a page per module.
 - Test suite with 95%+ enforced coverage (crypto, transport, models, sync + async flows,
   rotation).
