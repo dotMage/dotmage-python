@@ -76,15 +76,19 @@ def _wrap(ak: bytes, password: str, *, memory_kib: int, iterations: int) -> tupl
     return suite.b64encode(salt), suite.b64encode(nonce), suite.b64encode(ciphertext)
 
 
-def create_account_key_material(
+def build_key_material(
+    ak: bytes,
     password: str,
     *,
     with_recovery: bool = True,
     memory_kib: int = suite.DEFAULT_ARGON_MEMORY_KIB,
     iterations: int = suite.DEFAULT_ARGON_ITERATIONS,
-) -> AccountKeyCreation:
-    """Generate a new AK and wrap it under the master password (and optional recovery code)."""
-    ak = generate_account_key()
+) -> tuple[KeyMaterial, str | None]:
+    """Wrap an existing AK into a full :class:`KeyMaterial` bundle (with optional recovery).
+
+    Returns the material and the generated recovery code (``None`` when ``with_recovery`` is
+    false). Used both for a fresh account and when an invitee re-wraps a sealed AK.
+    """
     salt, nonce_ak, wrapped_ak = _wrap(ak, password, memory_kib=memory_kib, iterations=iterations)
 
     salt_rc = nonce_rc = wrapped_ak_rc = None
@@ -110,6 +114,21 @@ def create_account_key_material(
         nonce_rc=nonce_rc,
         wrapped_ak_rc=wrapped_ak_rc,
     )
+    return material, recovery_code
+
+
+def create_account_key_material(
+    password: str,
+    *,
+    with_recovery: bool = True,
+    memory_kib: int = suite.DEFAULT_ARGON_MEMORY_KIB,
+    iterations: int = suite.DEFAULT_ARGON_ITERATIONS,
+) -> AccountKeyCreation:
+    """Generate a new AK and wrap it under the master password (and optional recovery code)."""
+    ak = generate_account_key()
+    material, recovery_code = build_key_material(
+        ak, password, with_recovery=with_recovery, memory_kib=memory_kib, iterations=iterations
+    )
     return AccountKeyCreation(material=material, account_key=ak, recovery_code=recovery_code)
 
 
@@ -122,6 +141,24 @@ def rewrap_account_key(
 ) -> tuple[str, str, str]:
     """Re-wrap an existing AK under a (new) master password. Returns (salt, nonce, wrapped)."""
     return _wrap(ak, password, memory_kib=memory_kib, iterations=iterations)
+
+
+def wrap_with_salt(
+    ak: bytes,
+    password: str,
+    *,
+    salt: str,
+    memory_kib: int,
+    iterations: int,
+) -> tuple[str, str]:
+    """Wrap an AK under a KEK derived from ``password`` and an *existing* salt.
+
+    Used by key rotation, whose ``begin`` request re-wraps the AK but does not carry a new
+    ``salt`` field. Returns ``(nonce_ak, wrapped_ak)`` as base64 strings.
+    """
+    kek = derive_kek(password, suite.b64decode(salt), memory_kib=memory_kib, iterations=iterations)
+    nonce, ciphertext = aead.encrypt(kek, ak)
+    return suite.b64encode(nonce), suite.b64encode(ciphertext)
 
 
 def unwrap_account_key(
